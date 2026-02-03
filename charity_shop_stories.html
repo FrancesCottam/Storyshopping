@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Charity Shop Time Machine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Lexend', sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 10px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 15px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 1.6em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 15px 10px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1em;
+            transition: all 0.3s;
+            border: none;
+            background: transparent;
+        }
+        
+        .tab:hover {
+            background: #e9ecef;
+        }
+        
+        .tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .content {
+            padding: 20px 15px;
+        }
+        
+        .story-section {
+            display: none;
+        }
+        
+        .story-section.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .level-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 0.85em;
+        }
+        
+        .level-e3 {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .level-l1 {
+            background: #cce5ff;
+            color: #004085;
+        }
+        
+        .highlight {
+            background-color: #c8e6c9;
+            padding: 2px 4px;
+            border-radius: 3px;
+            transition: all 0.3s;
+        }
+        
+        .highlight:hover {
+            background-color: #a5d6a7;
+            cursor: help;
+        }
+        
+        .story-text {
+            font-size: 1em;
+            margin-bottom: 20px;
+            text-align: justify;
+        }
+        
+        .story-text p {
+            margin-bottom: 12px;
+        }
+        
+        .legend {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .legend h4 {
+            color: #2e7d32;
+            margin-bottom: 8px;
+            font-size: 1em;
+        }
+        
+        .legend ul {
+            list-style-position: inside;
+            color: #1b5e20;
+            font-size: 0.9em;
+        }
+        
+        .legend li {
+            margin: 4px 0;
+        }
+        
+        .inline-select {
+            display: inline-block;
+            padding: 2px 8px;
+            border: 2px solid #667eea;
+            border-radius: 4px;
+            background: white;
+            font-family: 'Lexend', sans-serif;
+            font-size: 1em;
+            font-weight: 500;
+            color: #667eea;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 0 2px;
+        }
+        
+        .inline-select:focus {
+            outline: none;
+            border-color: #764ba2;
+            background: #f8f9fa;
+        }
+        
+        .inline-select.correct {
+            border-color: #28a745;
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .inline-select.incorrect {
+            border-color: #dc3545;
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .check-story-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 20px;
+            font-size: 1em;
+            font-family: 'Lexend', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .check-story-btn:hover {
+            background: #218838;
+            transform: scale(1.02);
+        }
+        
+        .story-feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+            display: none;
+        }
+        
+        .story-feedback.show {
+            display: block;
+            animation: slideIn 0.5s;
+        }
+        
+        .story-feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+        
+        .story-feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.4em;
+            }
+            
+            .content {
+                padding: 15px 12px;
+            }
+            
+            .tab {
+                font-size: 0.9em;
+                padding: 12px 8px;
+            }
+            
+            .story-text {
+                font-size: 0.95em;
+            }
+            
+            .inline-select {
+                font-size: 0.95em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⏰ The Charity Shop Time Machine</h1>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="showStory('e3')">E3</button>
+            <button class="tab" onclick="showStory('l1')">L1</button>
+        </div>
+        
+        <div class="content">
+            <!-- E3 Story -->
+            <div id="e3" class="story-section active">
+                
+                <div class="story-text" id="e3-text">
+                    <p>Sam <span class="highlight" title="Past continuous">was walking</span> through town <select class="inline-select" id="e3-select1">
+                        <option value="">?</option>
+                        <option value="when">when</option>
+                        <option value="because">because</option>
+                        <option value="while">while</option>
+                        <option value="if">if</option>
+                    </select> she saw a small charity shop. She wanted to find something special <span class="highlight" title="Infinitive of purpose">to wear</span> to her friend's party next weekend. She loved vintage clothes so she decided to go inside. <span class="highlight" title="Complex sentence with 'because'">The shop was quiet <select class="inline-select" id="e3-select2">
+                        <option value="">?</option>
+                        <option value="when">when</option>
+                        <option value="because">because</option>
+                        <option value="while">while</option>
+                        <option value="if">if</option>
+                    </select> it was Tuesday afternoon</span> and nobody else <span class="highlight" title="Past continuous">was shopping</span> there.</p>
+                    
+                    <p><select class="inline-select" id="e3-select3">
+                        <option value="">?</option>
+                        <option value="when">when</option>
+                        <option value="because">because</option>
+                        <option value="while">while</option>
+                        <option value="if">if</option>
+                    </select> she <span class="highlight" title="Past continuous">was looking</span> through the jackets, Sam found a beautiful brown leather one. <span class="highlight" title="Modal verb 'should'">She thought she should</span> try it on. The moment she put it on everything changed! The shop around her disappeared and suddenly she <span class="highlight" title="Past continuous">was standing</span> in a 1980s nightclub. Loud music <span class="highlight" title="Past continuous">was playing</span> and young people <span class="highlight" title="Past continuous">were dancing</span> everywhere. A girl walked past - she <span class="highlight" title="Past continuous">was crying</span>. "I <span class="highlight" title="Modal 'have to'">have to</span> find my grandmother's necklace," she said sadly. "<span class="highlight" title="Present perfect">I've lost</span> it somewhere here."</p>
+                    
+                    <p>Sam wanted to help but then the vision ended as quickly as it had started. She was back in the quiet charity shop. The jacket was still on her shoulders. Sam took it off and checked the pockets. Inside she found a silver necklace! There was a name label in the jacket: "Sarah Mitchell, 1985." Sam smiled. She decided that <span class="highlight" title="First conditional"><select class="inline-select" id="e3-select4">
+                        <option value="">?</option>
+                        <option value="when">when</option>
+                        <option value="because">because</option>
+                        <option value="while">while</option>
+                        <option value="if">if</option>
+                    </select> she could find</span> Sarah Mitchell, <span class="highlight" title="First conditional">she would give</span> her the necklace back. After all these years Sarah <span class="highlight" title="Future 'will' - would for consistency">would finally have</span> her grandmother's special gift again. Sam bought the jacket and left the shop, ready to solve the mystery.</p>
+                </div>
+                
+                <button class="check-story-btn" onclick="checkStoryAnswers('e3')">Check Answers</button>
+                <div id="story-feedback-e3" class="story-feedback"></div>
+                
+                <div class="legend">
+                    <h4>Highlighted Grammar (E3):</h4>
+                    <ul>
+                        <li>Past Continuous (was walking, was looking, were dancing)</li>
+                        <li>Present Perfect (I've lost)</li>
+                        <li>Infinitive of purpose (to wear, to find)</li>
+                        <li>Modal verbs (should, have to, would)</li>
+                        <li>Second Conditional (if she could find... she would give)</li>
+                        <li>Complex sentences with subordinating conjunctions (because, when, while)</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- L1 Story -->
+            <div id="l1" class="story-section">
+                
+                <div class="story-text" id="l1-text">
+                    <p><select class="inline-select" id="l1-select1">
+                        <option value="">?</option>
+                        <option value="although">Although</option>
+                        <option value="when">When</option>
+                        <option value="despite">Despite</option>
+                        <option value="while">While</option>
+                        <option value="before">Before</option>
+                        <option value="after">After</option>
+                    </select> <span class="highlight" title="Past Perfect Continuous">she had been searching</span> for hours, Sam <span class="highlight" title="Past Perfect">hadn't found</span> anything worth buying. <span class="highlight" title="Complex sentence with 'when'">When she spotted</span> the charity shop on Mill Street, she decided to try one last time. She needed something vintage <span class="highlight" title="Infinitive of purpose">to wear</span> to her best friend's party and <span class="highlight" title="Past Perfect">she had promised</span> herself she would find the perfect jacket.</p>
+                    
+                    <p>The shop looked forgotten. Dust was floating in the afternoon sunlight <span class="highlight" title="Relative clause">that came through</span> the window. <span class="highlight" title="Past Perfect Continuous">She had been looking</span> through old clothes for about ten minutes when she saw it - a beautiful brown leather jacket hanging between a flowery dress and an old coat. <select class="inline-select" id="l1-select2">
+                        <option value="">?</option>
+                        <option value="although">Although</option>
+                        <option value="when">When</option>
+                        <option value="despite">Despite</option>
+                        <option value="while">While</option>
+                        <option value="before">Before</option>
+                        <option value="after">After</option>
+                    </select> <span class="highlight" title="Complex sentence with 'despite'">being old</span>, the jacket looked almost new. She slipped it on.</p>
+                    
+                    <p>The moment the leather touched her shoulders, the world shifted. <span class="highlight" title="Past Perfect Continuous">She had been standing</span> in a quiet shop but now she found herself transported to a crowded nightclub from the 1980s. Bright lights were flashing, loud music was playing and everywhere people were dancing in old-fashioned clothes. It was like watching a memory that wasn't hers.</p>
+                    
+                    <p><span class="highlight" title="Prepositional phrase">Through the crowd</span>, Sam noticed a young woman <span class="highlight" title="Relative clause">who looked</span> upset. She was searching desperately under tables and chairs. As Sam moved closer, she heard the woman say, "My grandmother's necklace is gone! <span class="highlight" title="Past Perfect">She had given</span> it to me before she died."</p>
+                    
+                    <p>Sam wanted to help but <select class="inline-select" id="l1-select3">
+                        <option value="">?</option>
+                        <option value="although">although</option>
+                        <option value="when">when</option>
+                        <option value="despite">despite</option>
+                        <option value="while">while</option>
+                        <option value="before">before</option>
+                        <option value="after">after</option>
+                    </select> she could speak, the vision faded. <select class="inline-select" id="l1-select4">
+                        <option value="">?</option>
+                        <option value="although">Although</option>
+                        <option value="when">When</option>
+                        <option value="despite">Despite</option>
+                        <option value="while">While</option>
+                        <option value="before">Before</option>
+                        <option value="after">After</option>
+                    </select> she opened her eyes, <span class="highlight" title="Past Perfect">she had returned</span> to the present. The jacket was still hanging on her shoulders and the shop was quiet again.</p>
+                    
+                    <p><span class="highlight" title="Present participle phrase">Feeling stunned</span>, Sam took off the jacket with trembling hands. <select class="inline-select" id="l1-select5">
+                        <option value="">?</option>
+                        <option value="although">Although</option>
+                        <option value="when">When</option>
+                        <option value="despite">Despite</option>
+                        <option value="while">While</option>
+                        <option value="before">Before</option>
+                        <option value="after">After</option>
+                    </select> she was checking the pockets, her fingers touched something small and cold - a delicate silver necklace. Inside the jacket she found a faded label: "Sarah Mitchell, 1985."</p>
+                    
+                    <p><select class="inline-select" id="l1-select6">
+                        <option value="">?</option>
+                        <option value="although">Although</option>
+                        <option value="when">When</option>
+                        <option value="despite">Despite</option>
+                        <option value="while">While</option>
+                        <option value="before">Before</option>
+                        <option value="after">After</option>
+                    </select> <span class="highlight" title="Complex sentence with multiple clauses">she had paid for the jacket</span>, Sam made a decision. <span class="highlight" title="Past Perfect">She had witnessed</span> a moment from this woman's past and now, <span class="highlight" title="Subordinating conjunction 'although'">although</span> almost forty years <span class="highlight" title="Past Perfect">had passed</span>, she had a chance to return something precious. <span class="highlight" title="Second conditional">If she could find</span> Sarah Mitchell, <span class="highlight" title="Second conditional">she would finally be able to</span> give her back the lost necklace her grandmother <span class="highlight" title="Past Perfect">had given</span> her all those years ago.</p>
+                </div>
+                
+                <button class="check-story-btn" onclick="checkStoryAnswers('l1')">Check Answers</button>
+                <div id="story-feedback-l1" class="story-feedback"></div>
+                
+                <div class="legend">
+                    <h4>Highlighted Grammar (L1):</h4>
+                    <ul>
+                        <li>Past Perfect (had been, hadn't found, had given, had passed, had witnessed, had returned)</li>
+                        <li>Past Perfect Continuous (had been searching, had been looking, had been standing)</li>
+                        <li>Complex sentences with subordinate clauses (when, although, despite, before, while, after)</li>
+                        <li>Relative clauses (that came through, who looked)</li>
+                        <li>Present participle phrases (feeling stunned)</li>
+                        <li>Second Conditional (if she could find... she would be able to)</li>
+                        <li>Prepositional phrases (through the crowd)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching
+        function showStory(level) {
+            document.querySelectorAll('.story-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(level).classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        // Cloze exercise checking
+        const storyAnswers = {
+            e3: {
+                'e3-select1': 'when',
+                'e3-select2': 'because',
+                'e3-select3': 'while',
+                'e3-select4': 'if'
+            },
+            l1: {
+                'l1-select1': 'although',
+                'l1-select2': 'despite',
+                'l1-select3': 'before',
+                'l1-select4': 'when',
+                'l1-select5': 'while',
+                'l1-select6': 'after'
+            }
+        };
+        
+        function checkStoryAnswers(level) {
+            const levelAnswers = storyAnswers[level];
+            let correct = 0;
+            let total = Object.keys(levelAnswers).length;
+            
+            for (let selectId in levelAnswers) {
+                const select = document.getElementById(selectId);
+                const userAnswer = select.value.toLowerCase();
+                const correctAnswer = levelAnswers[selectId];
+                
+                // Remove previous styling
+                select.classList.remove('correct', 'incorrect');
+                
+                if (userAnswer === correctAnswer) {
+                    correct++;
+                    select.classList.add('correct');
+                } else if (userAnswer !== '') {
+                    select.classList.add('incorrect');
+                }
+            }
+            
+            const feedback = document.getElementById('story-feedback-' + level);
+            feedback.classList.add('show');
+            
+            if (correct === total) {
+                feedback.className = 'story-feedback show correct';
+                feedback.innerHTML = '🎉 Excellent! All answers are correct! (' + correct + '/' + total + ')';
+            } else {
+                feedback.className = 'story-feedback show incorrect';
+                feedback.innerHTML = '💪 Keep trying! You got ' + correct + ' out of ' + total + ' correct.';
+            }
+        }
+    </script>
+</body>
+</html>
